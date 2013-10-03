@@ -1,6 +1,8 @@
 RedisRateLimiter
 ==================
 
+[![Build Status](https://travis-ci.org/seanxiesx/redis_rate_limiter.png)](https://travis-ci.org/seanxiesx/redis_rate_limiter)
+
 Redis-backed rate limiter
 
 Usage
