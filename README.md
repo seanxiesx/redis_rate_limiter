@@ -2,6 +2,7 @@ RedisRateLimiter
 ==================
 
 [![Build Status](https://travis-ci.org/seanxiesx/redis_rate_limiter.png)](https://travis-ci.org/seanxiesx/redis_rate_limiter)
+[![Coverage Status](https://coveralls.io/repos/seanxiesx/redis_rate_limiter/badge.png)](https://coveralls.io/r/seanxiesx/redis_rate_limiter)
 
 Redis-backed rate limiter
 
