@@ -11,7 +11,8 @@ Usage
 
 Initialize with preferred limit for a given interval. For example, to rate limit an action 100 times a minute:
 
-    rl = RedisRateLimiter.new("messages", :limit => 100, :interval => 60)
+    redis = Redis.new
+    rl = RedisRateLimiter.new("messages", redis, :limit => 100, :interval => 60)
 
 Add to subject's count:
 
