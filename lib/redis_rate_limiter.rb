@@ -25,7 +25,7 @@ class RedisRateLimiter
   def exceeded? subject
     subject = "#{@key}:#{subject}"
     return false if @redis.llen(subject) < @limit
-    last = @redis.lrange(subject, -1, -1).last
+    last = @redis.lindex(subject, -1)
     Time.now.to_i - last.to_i < @interval
   end
 end
