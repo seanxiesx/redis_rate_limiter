@@ -5,7 +5,6 @@ Gem::Specification.new do |s|
   s.name          = 'redis_rate_limiter'
   s.version       = RedisRateLimiter::VERSION.dup
   s.licenses      = ["MIT"]
-  s.date          = '2013-09-25'
   s.summary       = 'Redis-backed rate limiter'
   s.description   = 'Redis-backed rate limiter'
   s.authors       = ['Sean Xie']
