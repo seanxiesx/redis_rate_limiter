@@ -17,4 +17,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec", ">= 2.9.0"
   s.add_development_dependency "mock_redis"
+  s.add_development_dependency "coveralls"
 end
