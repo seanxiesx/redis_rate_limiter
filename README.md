@@ -22,3 +22,8 @@ Add to subject's count:
 Check if subject has exceeded limit:
 
     rl.exceeded?(sender)
+
+Documentation
+-----
+
+[http://rubydoc.info/github/seanxiesx/redis_rate_limiter/master/frames](http://rubydoc.info/github/seanxiesx/redis_rate_limiter/master/frames)
