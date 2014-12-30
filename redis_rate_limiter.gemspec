@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.summary       = 'Redis-backed rate limiter'
   s.description   = 'Redis-backed rate limiter'
   s.authors       = ['Sean Xie']
-  s.email         = 'seanx@referralcandy.com'
+  s.email         = 'sean@tellapart.com'
   s.files         = ['lib/redis_rate_limiter.rb']
   s.homepage      = 'https://rubygems.org/gems/redis_rate_limiter'
 
