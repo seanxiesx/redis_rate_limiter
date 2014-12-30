@@ -30,7 +30,7 @@ class RedisRateLimiter
   #
   # @param [String] subject A name to uniquely identify subject
   # @param [time] time UNIX timestamp of event
-  def add subject, time = Time.now.to_i
+  def add subject, time = Time.now.to_f
     subject = "#{@key}:#{subject}"
     @redis.multi do
       @redis.lpush(subject, time)
@@ -47,6 +47,6 @@ class RedisRateLimiter
     subject = "#{@key}:#{subject}"
     return false if @redis.llen(subject) < @limit
     last = @redis.lindex(subject, -1)
-    Time.now.to_i - last.to_i < @interval
+    Time.now.to_f - last.to_f < @interval
   end
 end
