@@ -14,7 +14,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency             "redis"
   s.add_development_dependency "rake"
-  s.add_development_dependency "rspec", ">= 2.9.0"
+  s.add_development_dependency "rspec", ">= 3.1.0"
+  s.add_development_dependency "rspec-its"
   s.add_development_dependency "mock_redis"
   s.add_development_dependency "coveralls"
   s.add_development_dependency "yard"
