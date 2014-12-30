@@ -44,7 +44,7 @@ describe RedisRateLimiter do
     end
     context "subject's list is at limit" do
       it "should be false if last item in subject's list is outside interval" do
-        outside_interval_timestamp = Time.now.to_i - @rl.interval - 1
+        outside_interval_timestamp = Time.now.to_f - @rl.interval - 1
         @rl.limit = 5
         @rl.add(subject, outside_interval_timestamp)
         4.times { @rl.add(subject) }
