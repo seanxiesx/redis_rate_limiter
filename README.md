@@ -23,6 +23,10 @@ Check if subject has exceeded limit:
 
     rl.exceeded?(sender)
 
+Query number of seconds until subject is not rate limited (returns 0.0 if subject is not rate limited):
+
+    rl.retry_in?(sender)
+
 Documentation
 -----
 

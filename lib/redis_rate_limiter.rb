@@ -31,11 +31,11 @@ class RedisRateLimiter
   # @param [String] subject A name to uniquely identify subject
   # @param [time] time UNIX timestamp of event
   def add subject, time = Time.now.to_f
-    subject = "#{@key}:#{subject}"
+    subject_key = "#{@key}:#{subject}"
     @redis.multi do
-      @redis.lpush(subject, time)
-      @redis.ltrim(subject, 0, @limit - 1)
-      @redis.expire(subject, @interval)
+      @redis.lpush(subject_key, time)
+      @redis.ltrim(subject_key, 0, @limit - 1)
+      @redis.expire(subject_key, @interval)
     end
   end
 
@@ -44,9 +44,25 @@ class RedisRateLimiter
   # @param [String] subject Name which uniquely identifies subject
   # @return [Boolean] Returns true if subject has exceeded count
   def exceeded? subject
-    subject = "#{@key}:#{subject}"
-    return false if @redis.llen(subject) < @limit
-    last = @redis.lindex(subject, -1)
-    Time.now.to_f - last.to_f < @interval
+    subject_key = "#{@key}:#{subject}"
+    return false if @redis.llen(subject_key) < @limit
+    time_since_oldest(subject_key) < @interval
+  end
+
+  # Get time in seconds until subject is not rate limited
+  #
+  # @param [String] subject Name which uniquely identifies subject
+  # @return [Float] Returns time in seconds until subject is not rate limited
+  def retry_in? subject
+    subject_key = "#{@key}:#{subject}"
+    return 0.0 if @redis.llen(subject_key) < @limit
+    elapsed = time_since_oldest(subject_key)
+    elapsed > @interval ? 0.0 : @interval - elapsed
+  end
+
+  private
+
+  def time_since_oldest subject_key
+    Time.now.to_f - @redis.lindex(subject_key, -1).to_f
   end
 end
