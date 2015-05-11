@@ -43,18 +43,59 @@ describe RedisRateLimiter do
       expect(@rl.exceeded?(subject)).to be_falsey
     end
     context "subject's list is at limit" do
-      it "should be false if last item in subject's list is outside interval" do
+      it "should be false if oldest item in subject's list is outside interval" do
         outside_interval_timestamp = Time.now.to_f - @rl.interval - 1
         @rl.limit = 5
         @rl.add(subject, outside_interval_timestamp)
         4.times { @rl.add(subject) }
         expect(@rl.exceeded?(subject)).to be_falsey
       end
-      it "should be true if last item in subject's list is within interval" do
+      it "should be true if oldest item in subject's list is within interval" do
         @rl.limit = 5
         5.times { @rl.add(subject) }
         expect(@rl.exceeded?(subject)).to be_truthy
       end
+    end
+  end
+
+  describe "#retry_in?" do
+    let(:subject) { "subject" }
+    before do
+      allow(Redis).to receive(:new).and_return(MockRedis.new)
+      @rl = RedisRateLimiter.new(:key, Redis.new)
+    end
+    it "should be 0.0 if subject's list is less than limit" do
+      expect(@rl.retry_in?(subject)).to eq(0.0)
+    end
+    context "subject's list is at limit" do
+      it "should be 0.0 if oldest item in subject's list is outside interval" do
+        outside_interval_timestamp = Time.now.to_f - @rl.interval - 1
+        @rl.limit = 5
+        @rl.add(subject, outside_interval_timestamp)
+        4.times { @rl.add(subject) }
+        expect(@rl.retry_in?(subject)).to eq(0.0)
+      end
+      it "should be the time in seconds until subject stops being rate limited" do
+        forty_seconds_ago = Time.now.to_f - 40
+        @rl.limit = 5
+        @rl.add(subject, forty_seconds_ago)
+        4.times { @rl.add(subject) }
+        expect(@rl.retry_in?(subject)).to be_within(1).of(20)
+      end
+    end
+  end
+
+  describe "#time_since_oldest" do
+    let(:subject) { "subject" }
+    let(:subject_key) { "key:subject" }
+    before do
+      allow(Redis).to receive(:new).and_return(@redis = MockRedis.new)
+      @rl = RedisRateLimiter.new(:key, Redis.new)
+    end
+    it "should return time since oldest event for given subject key" do
+      forty_seconds_ago = Time.now.to_f - 40
+      @rl.add(subject, forty_seconds_ago)
+      expect(@rl.send(:time_since_oldest, subject_key)).to be_within(1).of(40)
     end
   end
 end
