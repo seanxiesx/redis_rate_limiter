@@ -17,6 +17,19 @@ describe RedisRateLimiter do
       allow(Redis).to receive(:new).and_return(@redis = MockRedis.new)
       @rl = RedisRateLimiter.new(:key, Redis.new)
     end
+    it "should return false and not prepend timestamp if rate limit exceeded while waiting for lock" do
+      @rl.add(subject, 123)
+      allow(@rl).to receive(:exceeded?).and_return(false, true)
+      expect(@rl.add(subject)).to be_falsy
+      expect(@redis.lrange("key:#{subject}", 0, 0)).to eq(["123"])
+    end
+    it "should return true if successfully added timestamp to subject's list" do
+      expect(@rl.add(subject)).to be_truthy
+    end
+    it "should return false if the rate limit is exceeded" do
+      @rl.limit.times { @rl.add(subject) }
+      expect(@rl.add(subject)).to be_falsy
+    end
     it "should prepend timestamp to subject's list" do
       timestamp = 123
       @rl.add(subject, timestamp)
