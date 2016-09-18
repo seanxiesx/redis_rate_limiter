@@ -2,6 +2,8 @@ require 'redis'
 
 class RedisRateLimiter
 
+  SEMAPHORE = Mutex.new
+
   # @!attribute key
   #   @return [String] Name which uniquely identifies this rate limiter
   # @!attribute redis
@@ -32,11 +34,14 @@ class RedisRateLimiter
   # @param [time] time UNIX timestamp of event
   def add subject, time = Time.now.to_f
     subject_key = "#{@key}:#{subject}"
-    @redis.multi do
+    return false if exceeded? subject
+    SEMAPHORE.synchronize do
+      return false if exceeded? subject
       @redis.lpush(subject_key, time)
       @redis.ltrim(subject_key, 0, @limit - 1)
       @redis.expire(subject_key, @interval)
     end
+    true
   end
 
   # Check if subject has exceeded count
