@@ -98,4 +98,24 @@ describe RedisRateLimiter do
       expect(@rl.send(:time_since_oldest, subject_key)).to be_within(1).of(40)
     end
   end
+
+  describe "#count" do
+    let(:subject) { "subject" }
+    before do
+      allow(Redis).to receive(:new).and_return(@redis = MockRedis.new)
+      @rl = RedisRateLimiter.new(:key, Redis.new)
+      3.times { @rl.add(subject) }
+    end
+    it "should return a count of 3" do
+      expect(@rl.count(subject)).to eq(3)
+    end
+    context "after expiration" do
+      it "should return a count of 0" do
+        Timecop.travel(60) do
+          expect(@rl.count(subject)).to eq(0)
+        end
+      end
+    end
+
+  end
 end
