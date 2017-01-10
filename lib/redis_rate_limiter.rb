@@ -60,6 +60,14 @@ class RedisRateLimiter
     elapsed > @interval ? 0.0 : @interval - elapsed
   end
 
+  # Get number of events currently recorded for subject
+  #
+  # @param [String] subject Name which uniquely identifies subject
+  # @return [Integer] Returns number of events currently recorded for subject
+  def count subject
+    @redis.llen("#{@key}:#{subject}")
+  end
+
   private
 
   def time_since_oldest subject_key

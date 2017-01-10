@@ -27,6 +27,16 @@ Query number of seconds until subject is not rate limited (returns 0.0 if subjec
 
     rl.retry_in?(sender)
 
+Query number of events recorded for a given key
+
+    sender = "John"
+    3.times { rl.add(sender) }
+    rl.count(sender)
+    > 3
+    sleep 60
+    rl.count(sender)
+    > 0
+
 Documentation
 -----
 
