@@ -63,7 +63,7 @@ class RedisRateLimiter
   # Get number of events currently recorded for subject
   #
   # @param [String] subject Name which uniquely identifies subject
-  # @return [Ingeger] Returns number of events currently recorded for subject
+  # @return [Integer] Returns number of events currently recorded for subject
   def count subject
     @redis.llen("#{@key}:#{subject}")
   end
