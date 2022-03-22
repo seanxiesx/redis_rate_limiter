@@ -32,11 +32,11 @@ class RedisRateLimiter
   # @param [time] time UNIX timestamp of event
   def add subject, time = Time.now.to_f
     subject_key = "#{@key}:#{subject}"
-    @redis.multi do
-      @redis.lpush(subject_key, time)
-      @redis.ltrim(subject_key, 0, @limit - 1)
-      @redis.expire(subject_key, @interval)
+    @redis.multi do |pipeline|
+      pipeline.lpush(subject_key, time)
+      pipeline.ltrim(subject_key, 0, @limit - 1)
     end
+    @redis.expire(subject_key, @interval)
   end
 
   # Check if subject has exceeded count
