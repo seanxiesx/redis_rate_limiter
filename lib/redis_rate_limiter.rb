@@ -35,8 +35,8 @@ class RedisRateLimiter
     @redis.multi do |pipeline|
       pipeline.lpush(subject_key, time)
       pipeline.ltrim(subject_key, 0, @limit - 1)
+      pipeline.expire(subject_key, @interval)
     end
-    @redis.expire(subject_key, @interval)
   end
 
   # Check if subject has exceeded count
