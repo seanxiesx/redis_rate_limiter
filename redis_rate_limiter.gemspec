@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.files         = ['lib/redis_rate_limiter.rb']
   s.homepage      = 'https://rubygems.org/gems/redis_rate_limiter'
 
-  s.add_dependency             "redis"
+  s.add_dependency             "redis", ">= 4.6.0"
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec", ">= 3.1.0"
   s.add_development_dependency "rspec-its"
